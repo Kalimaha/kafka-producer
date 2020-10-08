@@ -1,14 +1,16 @@
 # Kafka Producer
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 Simple Ruby utility to publish random messages to Kafka in Heroku.
 
-## Gotchas
+## Gotchas _(setup)_
 
 * Topic must be created in Kafka add-on
 * Topic name must be set in the env as `KAFKA_TOPIC`
 * Topics are prefixed with `KAFKA_PREFIX` in Heroku multitenant
 
-## Produce Random Order
+## Publish Random Order
 
 Once this folder has been deployed to Heroku, run:
 
@@ -22,16 +24,24 @@ The output looks like:
 ===============================================
 	Publish random order to Kafka: START...
 ===============================================
-	KAFKA_PREFIX: canadian-28050.
-	KAFKA_TOPIC: orders
-	topic: canadian-28050.orders
+{:key=>"76b55546-b4b2-45b4-9f2d-d84c75660992",
+ :value=>
+  {:status=>"in_progress",
+   :centsPrice=>11085,
+   :currency=>"AUD",
+   ...
 ===============================================
 	Publish random order to Kafka: ...DONE
 ===============================================
 ```
 
-To verify run `heroku kafka:topics:tail <KAFKA_PREFIX><KAFKA_TOPIC> -a
-kafka-producer` in the terminal, the output looks like:
+To verify that the publishing is happening, you can run _(in a different terminal)_:
+
+```bash
+heroku kafka:topics:tail <KAFKA_PREFIX><KAFKA_TOPIC> -a kafka-producer
+```
+
+The output looks like:
 
 ```bash
 heroku kafka:topics:tail canadian-28050.orders -a kafka-producer
