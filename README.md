@@ -1,7 +1,5 @@
 # Kafka Producer
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Kalimaha/kafka-producer)
-
 Simple Ruby utility to publish random messages to Kafka in Heroku.
 
 ## Gotchas _(setup)_
