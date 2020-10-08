@@ -9,11 +9,10 @@ class Producer
   class << self
     def produce
       topic = "#{ENV['KAFKA_PREFIX']}#{ENV['KAFKA_TOPIC']}"
-      puts "\tKAFKA_PREFIX: #{ENV['KAFKA_PREFIX']}"
-      puts "\tKAFKA_TOPIC: #{ENV['KAFKA_TOPIC']}"
-      puts "\ttopic: #{topic}"
+      message = order
+      pp message
 
-      kafka_client.deliver_message(order.to_json, topic: topic)
+      kafka_client.deliver_message(message.to_json, topic: topic)
     end
 
     private
@@ -70,11 +69,3 @@ class Producer
     end
   end
 end
-
-puts "==============================================="
-puts "\tPublish random order to Kafka: START..."
-puts "==============================================="
-Producer.produce
-puts "==============================================="
-puts "\tPublish random order to Kafka: ...DONE"
-puts "==============================================="
