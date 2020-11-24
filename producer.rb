@@ -8,8 +8,7 @@ require "securerandom"
 class Producer
   class << self
     def produce
-      # topic = "#{ENV['KAFKA_PREFIX']}#{ENV['KAFKA_TOPIC']}"
-      topic = "#{ENV['CLOUDKARAFKA_PREFIX']}#{ENV['KAFKA_TOPIC']}"
+      topic = "#{ENV.fetch('KAFKA_PREFIX')}au-dev-bigcommerce-products"
       message = order
       pp message
 
@@ -19,35 +18,15 @@ class Producer
     private
 
     def kafka_client
-      tmp_ca_file = Tempfile.new("ca_certs")
-      tmp_ca_file.write(ENV.fetch("KAFKA_TRUSTED_CERT"))
-      tmp_ca_file.close
-
-      # Heroku
-      # @kafka_client ||= Kafka.new(
-      #   seed_brokers: ENV.fetch("KAFKA_URL"),
-      #   ssl_ca_cert_file_path: tmp_ca_file.path,
-      #   ssl_client_cert: ENV.fetch("KAFKA_CLIENT_CERT"),
-      #   ssl_client_cert_key: ENV.fetch("KAFKA_CLIENT_CERT_KEY"),
-      #   ssl_verify_hostname: false
-      # )
-
-      # Karafka
       @kafka_client ||= Kafka.new(
-        # seed_brokers: ENV['CLOUDKARAFKA_BROKERS'],
-        # sasl_scram_username: ENV['CLOUDKARAFKA_USERNAME'],
-        # sasl_scram_password: ENV['CLOUDKARAFKA_PASSWORD'],
-        # sasl_scram_mechanism: 'sha256'
-
-        seed_brokers: ENV['CLOUDKARAFKA_BROKERS']&.split(",")&.map { |b| "kafka://#{b}" },
-        sasl_scram_username: ENV['CLOUDKARAFKA_USERNAME'],
-        sasl_scram_password: ENV['CLOUDKARAFKA_PASSWORD'],
+        seed_brokers: ENV.fetch('KAFKA_BROKERS')&.split(",")&.map { |b| "kafka://#{b}" },
+        sasl_scram_username: ENV.fetch('KAFKA_USERNAME'),
+        sasl_scram_password: ENV.fetch('KAFKA_PASSWORD'),
         sasl_scram_mechanism: "sha256",
         ssl_ca_certs_from_system: true,
       )
     end
 
-    # rubocop:disable Metrics/MethodLength
     def order
       line_items = items
 
@@ -70,7 +49,6 @@ class Producer
         }
       }
     end
-    # rubocop:enable Metrics/MethodLength
 
     def items
       Array.new(rand(1..5)).map do |_i|
